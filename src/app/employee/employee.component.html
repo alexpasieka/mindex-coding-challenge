@@ -1,12 +1,23 @@
 <mat-card class="employee">
   <mat-card-header>
-    <mat-card-title>{{employee.lastName}}, {{employee.firstName}}</mat-card-title>
-    <mat-card-subtitle>{{employee.id}}</mat-card-subtitle>
+    <mat-card-title>{{employee.firstName}} {{employee.lastName}}, {{employee.position}}</mat-card-title>
+    <mat-card-subtitle>Employee ID: {{employee.id}}; Total Reports: {{totalReports}}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <dl>
-      <dt>Job Title</dt>
-      <dd>{{employee.position}}</dd>
-    </dl>
+    <ng-container *ngIf="!isLoading">
+      <ng-container *ngIf="directReports.length > 0; else noReports">
+        <mat-table [dataSource]="directReports">
+          <ng-container matColumnDef="fullName">
+            <mat-header-cell *matHeaderCellDef>Direct Reports</mat-header-cell>
+            <mat-cell *matCellDef="let report">{{report.firstName}} {{report.lastName}}, {{report.position}}</mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="['fullName']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['fullName'];"></mat-row>
+        </mat-table>
+      </ng-container>
+      <ng-template #noReports>
+        <p>This employee has no reports.</p>
+      </ng-template>
+    </ng-container>
   </mat-card-content>
 </mat-card>
