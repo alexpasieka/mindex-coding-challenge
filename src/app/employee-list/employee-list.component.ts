@@ -17,6 +17,10 @@ export class EmployeeListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.updateEmployees();
+  }
+
+  private updateEmployees() {
     this.employeeService.getAll()
       .pipe(
         reduce((emps, e: Employee) => emps.concat(e), []),
@@ -28,5 +32,10 @@ export class EmployeeListComponent implements OnInit {
   private handleError(e: Error | any): string {
     console.error(e);
     return this.errorMessage = e.message || 'Unable to retrieve employees';
+  }
+
+  async updateEmployee(employee: Employee): Promise<void> {
+    await this.employeeService.save(employee).toPromise();
+    this.updateEmployees();
   }
 }

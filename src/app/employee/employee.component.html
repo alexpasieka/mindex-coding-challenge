@@ -11,8 +11,15 @@
             <mat-header-cell *matHeaderCellDef>Direct Reports</mat-header-cell>
             <mat-cell *matCellDef="let report">{{report.firstName}} {{report.lastName}}, {{report.position}}</mat-cell>
           </ng-container>
-          <mat-header-row *matHeaderRowDef="['fullName']"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: ['fullName'];"></mat-row>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let report">
+              <button (click)="editDirectReport(report)"><i class="material-icons">edit</i></button>
+              <button (click)="deleteDirectReport(report)"><i class="material-icons">delete</i></button>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="['fullName', 'actions']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['fullName', 'actions'];"></mat-row>
         </mat-table>
       </ng-container>
       <ng-template #noReports>

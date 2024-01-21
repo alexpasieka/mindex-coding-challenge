@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
@@ -10,6 +10,9 @@ import { EmployeeService } from '../employee.service';
 })
 export class EmployeeComponent implements OnInit {
   @Input() employee: Employee;
+  @Output() editedDirectReport = new EventEmitter<Employee>();
+  @Output() deletedDirectReport = new EventEmitter<Employee>();
+
   totalReports: number;
   directReports: Array<Employee>;
   isLoading: boolean;
@@ -26,7 +29,7 @@ export class EmployeeComponent implements OnInit {
     });
   }
 
-  async getReports(employee: Employee, isDirect: boolean): Promise<void> {
+  private async getReports(employee: Employee, isDirect: boolean): Promise<void> {
     if (employee.directReports) {
       for (const employeeId of employee.directReports) {
         const e = await this.employeeService.get(employeeId).toPromise();
@@ -39,5 +42,20 @@ export class EmployeeComponent implements OnInit {
         this.totalReports++;
       }
     }
+  }
+
+  editDirectReport(report: Employee) {
+    const tempReport = report;
+    tempReport.firstName = "Alex"; // this is just a test for now
+
+    this.editedDirectReport.emit(tempReport);
+  }
+
+  deleteDirectReport(report: Employee) {
+    const tempEmployee = { ...this.employee };
+    const reportIndex = tempEmployee.directReports.indexOf(report.id);
+    tempEmployee.directReports.splice(reportIndex, 1);
+
+    this.deletedDirectReport.emit(tempEmployee);
   }
 }
